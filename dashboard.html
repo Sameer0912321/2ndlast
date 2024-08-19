@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Service Hub Dashboard</title>
+  <style>
+    /* Basic Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+    }
+
+    .header, .sidebar, .main-content, .footer {
+      padding: 20px;
+    }
+
+    .header {
+      background-color: #FFA500;
+      color: #fff;
+      text-align: center;
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    .sidebar {
+      width: 250px;
+      background-color: #333;
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    .sidebar ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    .sidebar ul li {
+      padding: 15px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .sidebar ul li:hover {
+      background-color: #444;
+    }
+
+    .sidebar ul li.active {
+      background-color: #555;
+    }
+
+    .main-content {
+      flex-grow: 1;
+      padding: 20px;
+      overflow-y: auto;
+      background-color: #fff;
+    }
+
+    .footer {
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      padding: 10px 0;
+      width: 100%;
+      position: fixed;
+      bottom: 0;
+    }
+
+    .section {
+      display: none;
+    }
+
+    .section.active {
+      display: block;
+    }
+
+    .card {
+      background-color: #fff;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .card h2 {
+      margin-bottom: 20px;
+      font-size: 20px;
+    }
+
+    .card form input, .card form select, .card form textarea {
+      width: calc(100% - 20px);
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+
+    .card form button {
+      background-color: #FFA500;
+      color: #fff;
+      border: none;
+      padding: 10px 15px;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: background-color 0.3s ease;
+    }
+
+    .card form button:hover {
+      background-color: #ff6347;
+    }
+
+    .booking-list, .hiring-list {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    .booking-list li, .hiring-list li {
+      padding: 10px;
+      border: 1px solid #ddd;
+      margin-bottom: 10px;
+      border-radius: 4px;
+    }
+
+    .stats {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .stat-card {
+      width: calc(50% - 20px);
+      background-color: #fff;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    .progress-circle {
+      width: 120px;
+      height: 120px;
+      background-color: #f4f4f4;
+      border-radius: 50%;
+      position: relative;
+      margin: 0 auto 20px auto;
+    }
+
+    .progress-circle .circle {
+      stroke-dasharray: 282.74;
+      stroke-dashoffset: 282.74;
+      stroke-width: 8;
+      stroke: #FFA500;
+      fill: none;
+      animation: progress 1s ease-out forwards;
+    }
+
+    .progress-circle .background {
+      stroke: #ddd;
+      stroke-width: 8;
+      fill: none;
+    }
+
+    .progress-circle text {
+      font-size: 24px;
+      fill: #333;
+      text-anchor: middle;
+
+      /* dominant-baseline: middle; */
+      font-weight: bold;
+    }
+
+    @keyframes progress {
+      from {
+        stroke-dashoffset: 282.74;
+      }
+      to {
+        stroke-dashoffset: calc(282.74 * (1 - var(--percent) / 100));
+      }
+    }
+
+    /* Responsive adjustments */
+    @media screen and (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      .sidebar {
+        width: 100%;
+      }
+      .main-content {
+        width: 100%;
+      }
+      .card form input, .card form select, .card form textarea {
+        width: 100%;
+      }
+      .stat-card {
+        width: 100%;
+      }
+      
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header" style="display: flex; flex-direction: row; justify-content: space-between;">
+    Service Hub Dashboard
+    <span><a href="index.php" style="text-decoration: none; color: white;">Back to Home ></a></span>
+  </div>
+
+  <div class="container">
+    <div class="sidebar">
+      <ul>
+        <li class="active" data-section="dashboard">Dashboard</li>
+        <li data-section="book-service">Book a Service</li>
+        <li data-section="manage-bookings">Manage Bookings</li>
+        <li data-section="hire">Hire Service Providers</li>
+      </ul>
+
+    </div>
+
+    <div class="main-content">
+      <div id="dashboard" class="section active">
+        <div class="card">
+          <h2>Welcome to the Service Hub Dashboard</h2>
+          <p>Use the menu on the left to navigate through different sections.</p>
+        </div>
+        <div class="stats">
+          <div class="stat-card">
+            <div class="progress-circle">
+            
+              <svg viewBox="0 0 100 100">
+                <circle class="background" cx="50" cy="50" r="45"></circle>
+                <circle class="circle" cx="50" cy="50" r="45" style="--percent: 75;"></circle>
+                <text x="50" y="50">75%</text>
+              </svg>
+            </div>
+            <p>Order Completion Rate</p>
+          </div>
+          <div class="stat-card">
+            <div class="progress-circle">
+              <svg viewBox="0 0 100 100">
+                <circle class="background" cx="50" cy="50" r="45"></circle>
+                <circle class="circle" cx="50" cy="50" r="45" style="--percent: 60;"></circle>
+                <text x="50" y="50">60%</text>
+              </svg>
+            </div>
+            <p>Service Completion Rate</p>
+          </div>
+          <div class="stat-card">
+            <div class="progress-circle">
+            
+              <svg viewBox="0 0 100 100">
+                <circle class="background" cx="50" cy="50" r="45"></circle>
+                <circle class="circle" cx="50" cy="50" r="45" style="--percent: 75;"></circle>
+                <text x="50" y="50">75%</text>
+              </svg>
+            </div>
+            <p>Order Completion Rate</p>
+          </div>
+          <div class="stat-card">
+            <div class="progress-circle">
+              <svg viewBox="0 0 100 100">
+                <circle class="background" cx="50" cy="50" r="45"></circle>
+                <circle class="circle" cx="50" cy="50" r="45" style="--percent: 60;"></circle>
+                <text x="50" y="50">60%</text>
+              </svg>
+            </div>
+            <p>Service Completion Rate</p>
+          </div>
+          <!-- Additional stats or charts can be added here -->
+        </div>
+      </div>
+
+      <div id="book-service" class="section">
+        <div class="card">
+          <h2>Book a Service</h2>
+          <form id="booking-form">
+            <input type="text" id="name" name="name" placeholder="Your Name" required>
+            <input type="email" id="email" name="email" placeholder="Your Email" required>
+            <select id="service-type" name="service-type" required>
+              <option value="">Select Service Type</option>
+              <option value="cleaning">Cleaning</option>
+              <option value="maintenance">Maintenance</option>
+              <option value="repair">Repair</option>
+            </select>
+            <textarea id="details" name="details" placeholder="Service Details" required></textarea>
+            <button type="submit">Book Service</button>
+          </form>
+        </div>
+      </div>
+
+      <div id="manage-bookings" class="section">
+        <div class="card">
+          <h2>Manage Bookings</h2>
+          <ul class="booking-list" id="booking-list">
+            <!-- Bookings will be listed here dynamically -->
+          </ul>
+        </div>
+      </div>
+
+      <div id="hire" class="section">
+        <div class="card">
+          <h2>Hire Service Providers</h2>
+          <form id="hiring-form">
+            <input type="text" id="provider-name" name="provider-name" placeholder="Provider Name" required>
+            <input type="email" id="provider-email" name="provider-email" placeholder="Provider Email" required>
+            <textarea id="provider-details" name="provider-details" placeholder="Provider Details" required></textarea>
+            <button type="submit">Hire Provider</button>
+          </form>
+          <ul class="hiring-list" id="hiring-list">
+            <!-- Hired providers will be listed here dynamically -->
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    &copy; 2024 Service Hub. All rights reserved.
+  </div>
+
+  <script>
+    // JavaScript for tab navigation
+    document.querySelectorAll('.sidebar ul li').forEach(li => {
+      li.addEventListener('click', function() {
+        document.querySelectorAll('.sidebar ul li').forEach(li => li.classList.remove('active'));
+        this.classList.add('active');
+
+        const section = this.getAttribute('data-section');
+        document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+        document.getElementById(section).classList.add('active');
+      });
+    });
+
+    // JavaScript for booking form submission
+    document.getElementById('booking-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const serviceType = document.getElementById('service-type').value;
+      const details = document.getElementById('details').value;
+
+      const bookingList = document.getElementById('booking-list');
+      const bookingItem = document.createElement('li');
+      bookingItem.textContent = `Name: ${name}, Email: ${email}, Service: ${serviceType}, Details: ${details}`;
+      bookingList.appendChild(bookingItem);
+
+      document.getElementById('booking-form').reset();
+    });
+
+    // JavaScript for hiring form submission
+    document.getElementById('hiring-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const providerName = document.getElementById('provider-name').value;
+      const providerEmail = document.getElementById('provider-email').value;
+      const providerDetails = document.getElementById('provider-details').value;
+
+      const hiringList = document.getElementById('hiring-list');
+      const hiringItem = document.createElement('li');
+      hiringItem.textContent = `Name: ${providerName}, Email: ${providerEmail}, Details: ${providerDetails}`;
+      hiringList.appendChild(hiringItem);
+
+      document.getElementById('hiring-form').reset();
+    });
+  </script>
+</body>
+</html>
